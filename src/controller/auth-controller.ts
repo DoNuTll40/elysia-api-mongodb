@@ -1,34 +1,20 @@
-
 import { Context } from "elysia";
-import prisma from "../config/prisma";
-import { createError } from "../util/createError";
 import { userRequestBody } from "../interface/interface";
+import { createError } from "../util/createError";
+import prisma from "../config/prisma";
 
-export const getUser = async (ctx: Context) => { // ctx เป็นชื่อตัวแปร ย่อมาจาก Context
-    const rs = await prisma.users.findMany()
-    if(rs.length !== 0){
-        return { result: rs, status: 200 }
-    }else{
-        ctx.set.status = 400
-        return {
-            message: "ไม่พบข้อมูล"
-        }
-    }
-}
-
-export const postUser = async (ctx: Context) => {
+export const signUp = async (ctx: Context) => {
     try {
-
         const body: unknown = ctx.body;
 
-        const { user_username, user_password, user_phone, user_email, role_id } = body as userRequestBody;
+        const  { user_username, user_password, user_phone, user_email } = body as userRequestBody
 
-        if (!user_username || !user_password || !user_phone || !user_email || !role_id){
-            return createError(ctx, 400, "กรอกข้อมูลให้ครบ")
+        if(!user_username || !user_password || !user_phone || !user_email){
+            return createError(ctx, 400, "ป้อนข้อมูลให้ครบทุกช่อง")
         }
 
         const checkUsername = await prisma.users.findFirst({
-            where: { user_username }
+            where: { user_username },
         })
 
         const checkPhone = await prisma.users.findFirst({
@@ -57,11 +43,6 @@ export const postUser = async (ctx: Context) => {
                 user_password,
                 user_phone,
                 user_email,
-                role: {
-                    connect: {
-                        role_id,
-                    }
-                }
             }
         })
 
@@ -72,6 +53,9 @@ export const postUser = async (ctx: Context) => {
 
     }catch(err){
         console.log(err)
-        return { message : "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" }
+        ctx.set.status = 500
+        return {
+            message: "เกิดข้อผิดพลาดในการเชื่อมต่อ"
+        }
     }
 }

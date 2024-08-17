@@ -15,7 +15,7 @@ model users {
   user_email     String    @unique
   user_create_at DateTime? @default(now()) @db.Date
   role           role      @relation(fields: [role_id], references: [role_id])
-  role_id        String    @db.ObjectId
+  role_id        String    @db.ObjectId @default("66c03963300fe981eccd18f4")
 }
 
 model role {
