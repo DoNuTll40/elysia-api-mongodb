@@ -18,9 +18,9 @@ export const getUser = async (ctx: Context) => { // ctx เป็นชื่อ
 export const postUser = async (ctx: Context) => {
     try {
 
-        const body: userRequestBody = await ctx.request.json()
+        const body: unknown = ctx.body;
 
-        const { user_username, user_password, user_phone, user_email, role_id } = body;
+        const { user_username, user_password, user_phone, user_email, role_id } = body as userRequestBody;
 
         if (!user_username || !user_password || !user_phone || !user_email || !role_id){
             return createError(ctx, 400, "กรอกข้อมูลให้ครบ")
@@ -44,8 +44,9 @@ export const postUser = async (ctx: Context) => {
             result: addUser,
             status: 200
         }
+
     }catch(err){
-        ctx.body = { message : "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" }
         console.log(err)
+        return { message : "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" }
     }
 }
