@@ -51,3 +51,53 @@ export const postRole = async (ctx: Context) => {
         return { message: "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" };
     }
 }
+
+export const updateRole = async (ctx: Context) => {
+    try {
+        const { roleId } = ctx.params;
+        const body: unknown = ctx.body;
+        
+        if(body === undefined){
+            return createError(ctx, 400, "ไม่พบข้อมูลที่ป้อนเข้ามา, โปรดลองใหม่")
+        }
+
+        if (!/^[a-fA-F0-9]{24}$/.test(roleId)) {
+            return createError(ctx, 400, "รูปแบบหมายเลขไอดีไม่ถูกต้อง");
+        }
+
+        const { role_type } = body as roleRequestBody;
+
+        const checkRoleId = await prisma.role.findFirst({
+            where: {
+                role_id: roleId
+            }
+        })
+
+        if(!checkRoleId){
+            return createError(ctx, 400, "ไม่พบไอดีที่ต้องการแก้ไข, โปรดลองใหม่")
+        }
+
+        if(!role_type){
+            return createError(ctx, 400, "ไม่พบข้อมูลที่ป้อนเข้ามา, โปรดลองใหม่")
+        }
+
+        const upRole = await prisma.role.update({
+            where: {
+                role_id: roleId
+            },
+            data: {
+                role_type,
+            }
+        })
+
+        return {
+            result: upRole,
+            status: 200
+        }
+
+    }catch(err){
+        console.log(err)
+        ctx.set.status = 500;
+        return { message: "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" };
+    }
+}

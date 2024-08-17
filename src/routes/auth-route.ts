@@ -51,6 +51,26 @@ export const authRoute = (app: Elysia) => {
                     }
                 }
             },
+            400: {
+                description: 'Bad Request - Invalid Input',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                result: {
+                                    type: 'string',
+                                    example: 'รายละเอียดข้อผิดพลาด'
+                                },
+                                status: {
+                                    type: 'integer',
+                                    example: 400,
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             500: {
                 description: 'Sign-up internal server error',
                 content: {
@@ -123,6 +143,22 @@ export const authRoute = (app: Elysia) => {
                                 status: {
                                     type: 'integer',
                                     example: 400
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            500: {
+                description: 'Sign-up internal server error',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                error: {
+                                    type: 'string',
+                                    example: 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
                                 }
                             }
                         }
