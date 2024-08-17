@@ -6,3 +6,7 @@ export interface userRequestBody {
     user_email: string;
     role_id: string;
 }
+
+export interface roleRequestBody {
+    role_type: string;
+}

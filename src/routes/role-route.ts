@@ -1,6 +1,7 @@
 import Elysia from "elysia";
-import { getRole } from "../controller/role-controller";
+import { getRole, postRole } from "../controller/role-controller";
 
 export const roleRoute = (app: Elysia) => {
-    app.get('role', getRole)
+    app.get('/role', getRole);
+    app.post('/role', postRole);
 }
