@@ -7,7 +7,7 @@ import swagger from "@elysiajs/swagger"
 const port = process.env.PORT || 8000
 
 app.use(cors())
-app.use(serverTiming())
+// app.use(serverTiming())
 app.use(swagger({
     documentation: {
         info: {
