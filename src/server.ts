@@ -1,36 +1,57 @@
+import serverTiming from "@elysiajs/server-timing";
+import app from "./app";
+import { cors } from "@elysiajs/cors";
+import swagger from "@elysiajs/swagger";
+import { Context } from "elysia";
+import jwt from "@elysiajs/jwt";
+import cookie from "@elysiajs/cookie";
 
-import serverTiming from "@elysiajs/server-timing"
-import app from "./app"
-import { cors } from '@elysiajs/cors'
-import swagger from "@elysiajs/swagger"
-import { Context } from "elysia"
+const port = process.env.PORT || 8000;
 
-const port = process.env.PORT || 8000
-
-app.use(cors())
-app.use(serverTiming())
-app.use(swagger({
+app.use(cors());
+app.use(serverTiming());
+// app.use(jwt({
+//     name: 'jwt',
+//     secret: Bun.env.JWT_SECRET!,
+// }))
+app.use(cookie());
+app.use(
+  swagger({
     documentation: {
-        info: {
-            title: 'API Documentation',
-            version: '0.5.2'
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
         },
-        tags: [
-            { name: 'App', description: 'General endpoints' },
-            { name: 'Auth', description: 'Authentication endpoints' },
-        ]
+      },
+      openapi: "3.0.0",
+      info: {
+        title: "API Documentation",
+        version: "0.5.2",
+      },
+      tags: [
+        { name: "Role", description: "Role endpoints" },
+        { name: "User", description: "User endpoints" },
+        { name: "Auth", description: "Authentication endpoints" },
+      ],
     },
-    path: '/swagger'
-}))
+    path: "/swagger",
+  })
+);
 
-app.all("*", (ctx: Context) => {
-    ctx.set.status = 404
-    return {
-        result: "ไม่พบข้อมูลเส้นทาง",
-        status: 404,
-    };
+app.all("*", ({ set }: Context) => {
+  set.status = 404;
+  return {
+    result: "ไม่พบข้อมูลเส้นทาง",
+    status: 404,
+  };
 });
 
 app.listen(port, () => {
-    console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
-})
+  console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  );
+});

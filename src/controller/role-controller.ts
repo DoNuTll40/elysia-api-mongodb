@@ -101,3 +101,39 @@ export const updateRole = async (ctx: Context) => {
         return { message: "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" };
     }
 }
+
+export const deleteRole = async (ctx: Context) => {
+    try {
+        const { roleId } = ctx.params;
+
+        if (!/^[a-fA-F0-9]{24}$/.test(roleId)) {
+            return createError(ctx, 400, "รูปแบบหมายเลขไอดีไม่ถูกต้อง");
+        }
+
+        const checkRoleId = await prisma.role.findFirst({
+            where: {
+                role_id: roleId
+            }
+        })
+
+        if(!checkRoleId){
+            return createError(ctx, 400, "ไม่พบไอดีที่ต้องการแก้ไข, โปรดลองใหม่")
+        }
+
+        const delRole = await prisma.role.delete({
+            where: {
+                role_id: roleId
+            },
+        })
+
+        return {
+            result: delRole,
+            status: 200
+        }
+
+    }catch(err){
+        console.log(err)
+        ctx.set.status = 500;
+        return { message: "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" };
+    }
+}
