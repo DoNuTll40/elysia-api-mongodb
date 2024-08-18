@@ -38,7 +38,34 @@ app.use(
         { name: "Auth", description: "Authentication endpoints" },
       ],
     },
-    path: "/swagger",
+    path: "/",
+  })
+);
+
+app.use(
+  swagger({
+    documentation: {
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      },
+      openapi: "3.0.0",
+      info: {
+        title: "API Documentation",
+        version: "0.5.2",
+      },
+      tags: [
+        { name: "Role", description: "Role endpoints" },
+        { name: "User", description: "User endpoints" },
+        { name: "Auth", description: "Authentication endpoints" },
+      ],
+    },
+    path: '/swagger', // แสดงที่เส้นทาง '/swagger'
   })
 );
 
