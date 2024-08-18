@@ -3,6 +3,7 @@ import { userRequestBody } from "../interface/interface";
 import { createError } from "../util/createError";
 import prisma from "../config/prisma";
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto-js')
 
 export const signUp = async (ctx: Context) => {
     try {
@@ -38,10 +39,12 @@ export const signUp = async (ctx: Context) => {
             return createError(ctx, 400, "มีผู้ใช้งานอีเมลนี้แล้ว")
         }
 
+        const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();
+
         const addUser = await prisma.users.create({
             data: {
                 user_username,
-                user_password,
+                user_password: hashPassowrd,
                 user_phone,
                 user_email,
                 role_id: "66c03963300fe981eccd18f4"
@@ -76,11 +79,12 @@ export const signIn = async (ctx: Context) => {
             return createError(ctx, 400, "รหัสผ่านไม่ตรงกัน, โปรดลองใหม่")
         }
 
-
-
         const checkUsername = await prisma.users.findFirst({
             where: {
                 user_username,
+            },
+            include: {
+                role: true
             }
         })
 
@@ -90,27 +94,24 @@ export const signIn = async (ctx: Context) => {
 
         const checkPassword = await prisma.users.findFirst({
             where: {
-                AND: [
-                    {user_username},
-                    {user_password},
-                ]
-            },
-            include: {
-                role: true
+                user_username
             }
         })
 
-        if(!checkPassword){
+        const decode = crypto.AES.decrypt(checkPassword?.user_password, process.env.CRYPTO_SECRET)
+        const originalPassowrd = decode.toString(crypto.enc.Utf8)
+
+        if(user_password !== originalPassowrd){
             return createError(ctx, 400, "รหัสผ่านไม่ถูกต้อง, โปรดลองใหม่")
         }
 
         const accessToken = await jwt.sign({
             result: {
-                userId: checkPassword.user_id,
+                userId: checkUsername.user_id,
                 username: user_username,
-                email: checkPassword.user_email,
-                phone: checkPassword.user_phone,
-                role: checkPassword.role.role_type
+                email: checkUsername.user_email,
+                phone: checkUsername.user_phone,
+                role: checkUsername.role.role_type
             },
             create_at: new Date().toLocaleDateString('th-TH'),
             success: true,

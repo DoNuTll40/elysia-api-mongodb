@@ -3,6 +3,7 @@ import { Context } from "elysia";
 import prisma from "../config/prisma";
 import { createError } from "../util/createError";
 import { userRequestBody } from "../interface/interface";
+const crypto = require('crypto-js')
 
 export const getUser = async (ctx: Context) => { // ctx เป็นชื่อตัวแปร ย่อมาจาก Context
     const rs = await prisma.users.findMany()
@@ -51,10 +52,12 @@ export const postUser = async (ctx: Context) => {
             return createError(ctx, 400, "มีผู้ใช้งานอีเมลนี้แล้ว")
         }
 
+        const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();
+
         const addUser = await prisma.users.create({
             data: {
                 user_username,
-                user_password,
+                user_password: hashPassowrd,
                 user_phone,
                 user_email,
                 role: {
