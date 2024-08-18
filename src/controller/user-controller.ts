@@ -104,15 +104,15 @@ export const updateUser = async (ctx: Context) => {
         })
 
         const checkUsername = await prisma.users.findFirst({
-            where: { user_username }
+            where: { user_username, NOT: { user_id: userId } },
         })
 
         const checkPhone = await prisma.users.findFirst({
-            where: { user_phone }
+            where: { user_phone, NOT: { user_id: userId } }
         })
 
         const checkEmail = await prisma.users.findFirst({
-            where: { user_email }
+            where: { user_email, NOT: { user_id: userId } }
         })
 
         if(!checkUserId){
