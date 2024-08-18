@@ -14,7 +14,7 @@ export const getRole = async (ctx: Context) => {
             status: 200
         }
     }catch(err){
-        console.log(err)
+        console.log(err);
         ctx.set.status = 500;
         return { message: "เกิดข้อผิดพลาดในการเข้าถึงฐานข้อมูล" };
     }
@@ -56,7 +56,7 @@ export const updateRole = async (ctx: Context) => {
     try {
         const { roleId } = ctx.params;
         const body: unknown = ctx.body;
-        
+
         if (!/^[a-fA-F0-9]{24}$/.test(roleId)) {
             return createError(ctx, 400, "รูปแบบหมายเลขไอดีไม่ถูกต้อง");
         }
