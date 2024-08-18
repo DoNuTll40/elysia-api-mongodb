@@ -175,6 +175,19 @@ export const roleRoute = (app: Elysia) => {
               bearerAuth: [],
             },
           ],
+          requestBody: {
+            content: {
+              'application/json': {
+                schema: {
+                  type: "object",
+                  properties: {
+                    role_type: { type: "string" },
+                  },
+                  required: ["role_type"],
+                },
+              }
+            }
+          },
           responses: {
             200: {
               description: "Update role successful!",

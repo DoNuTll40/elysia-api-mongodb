@@ -57,10 +57,6 @@ export const updateRole = async (ctx: Context) => {
         const { roleId } = ctx.params;
         const body: unknown = ctx.body;
         
-        if(body === undefined){
-            return createError(ctx, 400, "ไม่พบข้อมูลที่ป้อนเข้ามา, โปรดลองใหม่")
-        }
-
         if (!/^[a-fA-F0-9]{24}$/.test(roleId)) {
             return createError(ctx, 400, "รูปแบบหมายเลขไอดีไม่ถูกต้อง");
         }
