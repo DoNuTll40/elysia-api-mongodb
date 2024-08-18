@@ -44,6 +44,7 @@ export const signUp = async (ctx: Context) => {
                 user_password,
                 user_phone,
                 user_email,
+                role_id: "66c03963300fe981eccd18f4"
             }
         })
 
