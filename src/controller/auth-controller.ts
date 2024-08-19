@@ -9,10 +9,14 @@ export const signUp = async (ctx: Context) => {
     try {
         const body: unknown = ctx.body;
 
-        const  { user_username, user_password, user_phone, user_email } = body as userRequestBody
+        const  { user_username, user_password, user_phone, user_email, confirmPassword } = body as userRequestBody
 
-        if(!user_username || !user_password || !user_phone || !user_email){
+        if(!user_username || !user_password || !user_phone || !user_email || !confirmPassword){
             return createError(ctx, 400, "ป้อนข้อมูลให้ครบทุกช่อง")
+        }
+
+        if(user_password !== confirmPassword){
+            return createError(ctx, 400, "รหัสผ่านไม่ตรงกัน, โปรดลองใหม่")
         }
 
         const checkUsername = await prisma.users.findFirst({
@@ -69,14 +73,10 @@ export const signIn = async (ctx: Context) => {
     try {
         const body: unknown = ctx.body;
 
-        const { user_username, user_password, confirmPassword } = body as userRequestBody;
+        const { user_username, user_password } = body as userRequestBody;
 
-        if(!user_username || !user_password || !confirmPassword){
+        if(!user_username || !user_password){
             return createError(ctx, 400, "ป้อนข้อมูลให้ครบ")
-        }
-
-        if(user_password !== confirmPassword){
-            return createError(ctx, 400, "รหัสผ่านไม่ตรงกัน, โปรดลองใหม่")
         }
 
         const checkUsername = await prisma.users.findFirst({

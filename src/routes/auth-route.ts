@@ -24,6 +24,7 @@ export const authRoute = (app: Elysia) => {
                   properties: {
                     user_username: { type: "string" },
                     user_password: { type: "string" },
+                    confirmPassword: { type: "string" },
                     user_email: { type: "string" },
                     user_phone: { type: "string" },
                   },
@@ -32,6 +33,7 @@ export const authRoute = (app: Elysia) => {
                     "user_password",
                     "user_email",
                     "user_phone",
+                    "confirmPassword",
                   ],
                 },
               },
@@ -116,9 +118,8 @@ export const authRoute = (app: Elysia) => {
                   properties: {
                     user_username: { type: "string" },
                     user_password: { type: "string" },
-                    confirmPassword: { type: "string" },
                   },
-                  required: ["user_username", "user_password", "confirmPassword"],
+                  required: ["user_username", "user_password"],
                 },
               },
             },
