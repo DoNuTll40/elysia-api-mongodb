@@ -20,3 +20,11 @@ DATABASE_URL="mongodb+srv://<username>:<password>@cluster.idcluster.mongodb.net/
 
 PORT = 8000
 ```
+
+## Descriptction
+coding with
+- nodejs
+- elysia
+- bun
+- prisma
+- swagger
