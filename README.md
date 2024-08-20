@@ -19,6 +19,12 @@ Open http://localhost:8000/ with your browser to see the result.
 DATABASE_URL="mongodb+srv://<username>:<password>@cluster.idcluster.mongodb.net/mydatabase"
 
 PORT = 8000
+
+JWT_SECRET = donut@1140
+
+JWT_EXPIRES_IN = 7d
+
+CRYPTO_SECRET = donut@1140
 ```
 
 ## Descriptction
