@@ -20,11 +20,11 @@ DATABASE_URL="mongodb+srv://<username>:<password>@cluster.idcluster.mongodb.net/
 
 PORT = 8000
 
-JWT_SECRET = ~~~~~~~
+JWT_SECRET = d********0
 
 JWT_EXPIRES_IN = 7d
 
-CRYPTO_SECRET = ~~~~~~~
+CRYPTO_SECRET = d********0
 ```
 
 ## Descriptction
