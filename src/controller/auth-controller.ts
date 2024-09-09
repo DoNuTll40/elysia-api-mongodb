@@ -44,7 +44,7 @@ export const signUp = async (ctx: Context) => {
             return createError(ctx, 400, "มีผู้ใช้งานอีเมลนี้แล้ว")
         }
 
-        const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();
+        const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();   
 
         const genUID = `U${nanoid(11).toUpperCase()}`
 
@@ -129,7 +129,7 @@ export const signIn = async (ctx: Context) => {
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 วัน
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             priority: 'high',
-            sameSite: 'lax',
+            sameSite: 'none',
             path: "/",
         });
         

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 export const authenticate = (app: Elysia) => 
     app.derive(async ({ request, set, cookie }) => {
-        const token = request.headers.get("Authorization") ||  cookie.accessToken.value;
+        const token = request.headers.get("Authorization") || cookie.accessToken.value;
 
         if (!token) {
             set.status = 401;
