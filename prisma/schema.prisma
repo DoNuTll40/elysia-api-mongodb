@@ -9,7 +9,7 @@ datasource db {
 
 model users {
   id                  String       @id @default(auto()) @map("_id") @db.ObjectId
-  user_id             String       @unique
+  user_code           String       @unique
   user_username       String       @unique
   user_password       String
   user_phone          String       @unique @default("000-000-0000")
@@ -32,7 +32,7 @@ model users {
 
 model userImage {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  uimg_id        String   @unique
+  uimg_code      String   @unique
   uimg_profile   String // เก็บ Base64 ของภาพ
   uimg_create_at DateTime @default(now())
   uimg_status    Int      @default(1) // 1 คือใช้งาน 0 คือไม่ใช้งาน
@@ -48,7 +48,7 @@ model role {
 
 model bannerShop {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId // รหัสแบนเนอร์
-  bShop_id         String    @unique // รหัสแบนเนอร์แบบไม่ได้สร้างจ่าก mongo
+  bShop_code       String    @unique // รหัสแบนเนอร์แบบไม่ได้สร้างจ่าก mongo
   bShop_image      String    @db.String // เก็บ Base64 ของภาพ
   bShop_link       String    @db.String // ลิ้งค์ที่จะแสดงเมื่อกดที่ภาพ
   bShop_status     Boolean   @default(false) // สถานะของแบนเนอร์ (true = แสดง, false = ซ่อน)
@@ -86,12 +86,12 @@ model reportStatus {
 
 model logs {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  log_id         String   @unique
+  log_code       String   @unique
   log_medthod    String   @db.String
   log_pathname   String   @db.String
   log_action     String // ชื่อการกระทำ เช่น "change report status"
-  log_code       Int // เก็บสถานะ เช่น 200, 400 เป็นต้น
-  log_status     String // เก็บค่าแบบ fail, error หรือ success
+  log_status     Int // เก็บสถานะ เช่น 200, 400 เป็นต้น
+  log_result     String // เก็บค่าแบบ fail, error หรือ success
   log_details    String // รายละเอียดเพิ่มเติม เช่น "status changed from X to Y"
   log_ip_address String   @db.String // ที่อยู่ IP ของผู้ใช้
   log_user_agent String   @db.String // ข้อมูลเกี่ยวกับเบราว์เซอร์หรืออุปกรณ์
@@ -103,7 +103,7 @@ model logs {
 model logError {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   error_id          String   @unique
-  error_code        String   @db.String
+  error_status        String   @db.String
   error_type        String // ประเภทของข้อผิดพลาด เช่น Database, API, Authentication
   error_message     String // ข้อความแสดงข้อผิดพลาด
   error_stack_trace String // รายละเอียดของข้อผิดพลาด เช่น stack trace

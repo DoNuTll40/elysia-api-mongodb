@@ -64,7 +64,7 @@ export const postUser = async (ctx: Context) => {
 
         const addUser = await prisma.users.create({
             data: {
-                user_id: userId,
+                user_code: userId,
                 user_username,
                 user_password: hashPassowrd,
                 user_phone,
@@ -110,19 +110,19 @@ export const updateUser = async (ctx: Context) => {
         }
 
         const checkUserId = await prisma.users.findFirst({
-            where: { user_id: userId }
+            where: { id: userId }
         })
 
         const checkUsername = await prisma.users.findFirst({
-            where: { user_username, NOT: { user_id: userId } },
+            where: { user_username, NOT: { id: userId } },
         })
 
         const checkPhone = await prisma.users.findFirst({
-            where: { user_phone, NOT: { user_id: userId } }
+            where: { user_phone, NOT: { id: userId } }
         })
 
         const checkEmail = await prisma.users.findFirst({
-            where: { user_email, NOT: { user_id: userId } }
+            where: { user_email, NOT: { id: userId } }
         })
 
         if(!checkUserId){
@@ -151,7 +151,7 @@ export const updateUser = async (ctx: Context) => {
 
         const updateU = await prisma.users.update({
             where: {
-                user_id: userId
+                id: userId
             },
             data: {
                 user_username,
@@ -190,7 +190,7 @@ export const deleteUser = async (ctx: Context) => {
         }
 
         const checkUserId = await prisma.users.findFirst({
-            where: { user_id: userId }
+            where: { id: userId }
         })
 
         if(!checkUserId){
@@ -198,7 +198,7 @@ export const deleteUser = async (ctx: Context) => {
         }
 
         const deleteU = await prisma.users.delete({
-            where: { user_id: userId }
+            where: { id: userId }
         })
 
         ctx.set.status = 200

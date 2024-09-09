@@ -54,11 +54,11 @@ export const signUp = async (ctx: Context) => {
         const currentDate = `${year}${month}${day}`;
         
         const numberUserCount = await prisma.users.count();
-        const userId = `USER${numberUserCount + 1}`;
+        const userId = `USER${currentDate}${numberUserCount + 1}`;
         
         const addUser = await prisma.users.create({
             data: {
-                user_id: userId,
+                user_code: userId,
                 user_username,
                 user_password: hashPassowrd,
                 user_phone,
@@ -119,7 +119,7 @@ export const signIn = async (ctx: Context) => {
 
         const accessToken = await jwt.sign({
             result: {
-                userId: checkUsername.user_id,
+                userId: checkUsername.id,
                 username: user_username,
                 email: checkUsername.user_email,
                 phone: checkUsername.user_phone,

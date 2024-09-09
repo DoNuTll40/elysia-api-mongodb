@@ -22,10 +22,11 @@ export const authenticate = (app: Elysia) =>
             const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
             const user = await prisma.users.findFirst({
                 where: {
-                    user_id: decoded.userId
+                    id: decoded.userId
                 },
                 select: {
-                    user_id: true,
+                    id: true,
+                    user_code: true,
                     user_username: true,
                     user_email: true,
                     user_phone: true,
