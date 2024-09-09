@@ -54,7 +54,7 @@ export const signUp = async (ctx: Context) => {
         const currentDate = `${year}${month}${day}`;
         
         const numberUserCount = await prisma.users.count();
-        const userId = `USER${currentDate}${numberUserCount + 1}`;
+        const userId = `USER${numberUserCount + 1}`;
         
         const addUser = await prisma.users.create({
             data: {
