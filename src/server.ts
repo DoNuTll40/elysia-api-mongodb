@@ -1,5 +1,5 @@
 import serverTiming from "@elysiajs/server-timing";
-import app from "../app";
+import app from "./app";
 import { cors } from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import { Context } from "elysia";
