@@ -53,8 +53,18 @@ export const postUser = async (ctx: Context) => {
 
         const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();
 
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const currentDate = `${year}${month}${day}`;
+        
+        const numberUserCount = await prisma.users.count();
+        const userId = `USER${currentDate}${numberUserCount + 1}`;
+
         const addUser = await prisma.users.create({
             data: {
+                user_id: userId,
                 user_username,
                 user_password: hashPassowrd,
                 user_phone,
