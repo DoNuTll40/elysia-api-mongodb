@@ -47,19 +47,25 @@ export const signUp = async (ctx: Context) => {
 
         const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();   
 
-        // const genUID = `USER-${new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14)}`;
-        // const genUID = `USER-${Date.now()}`;
-
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const currentDate = `${year}${month}${day}`;
+        
+        const numberUserCount = await prisma.users.count();
+        const userId = `USER${currentDate}${numberUserCount + 1}`;
+        
         const addUser = await prisma.users.create({
             data: {
-                user_id: uuidv4(),
+                user_id: userId,
                 user_username,
                 user_password: hashPassowrd,
                 user_phone,
                 user_email,
                 role_id: "66c03963300fe981eccd18f4"
             }
-        })
+        });
 
         return {
             result: addUser,
