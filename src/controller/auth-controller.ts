@@ -5,6 +5,7 @@ import prisma from "../config/prisma";
 import { nanoid } from "nanoid";
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto-js')
+const { v4: uuidv4 } = require('uuid')
 
 export const signUp = async (ctx: Context) => {
     try {
@@ -51,7 +52,7 @@ export const signUp = async (ctx: Context) => {
 
         const addUser = await prisma.users.create({
             data: {
-                user_id: Date.now().toString(),
+                user_id: uuidv4(),
                 user_username,
                 user_password: hashPassowrd,
                 user_phone,
