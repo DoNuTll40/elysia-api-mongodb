@@ -119,11 +119,13 @@ export const signIn = async (ctx: Context) => {
 
         const accessToken = await jwt.sign({
             result: {
-                userId: checkUsername.id,
-                username: user_username,
-                email: checkUsername.user_email,
-                phone: checkUsername.user_phone,
-                role: checkUsername.role.role_type
+                id: checkUsername.id,
+                user_code: checkUsername.user_code,
+                user_username: user_username,
+                user_email: checkUsername.user_email,
+                user_phone: checkUsername.user_phone,
+                role: checkUsername.role.role_type,
+                isVerified: checkUsername.isVerified
             },
             create_at: new Date().toLocaleDateString('th-TH'),
             success: true,
