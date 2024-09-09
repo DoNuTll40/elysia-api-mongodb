@@ -1,5 +1,6 @@
 
 export interface userRequestBody {
+  user_id: string;
   user_username: string;
   user_password: string;
   confirmPassword: string;

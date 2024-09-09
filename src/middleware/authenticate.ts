@@ -3,8 +3,8 @@ import prisma from "../config/prisma";
 const jwt = require('jsonwebtoken');
 
 export const authenticate = (app: Elysia) => 
-    app.derive(async ({ request, set }) => {
-        const token = request.headers.get("Authorization");
+    app.derive(async ({ request, set, cookie }) => {
+        const token = request.headers.get("Authorization") ||  cookie.accessToken.value;
 
         if (!token) {
             set.status = 401;
@@ -23,6 +23,14 @@ export const authenticate = (app: Elysia) =>
             const user = await prisma.users.findFirst({
                 where: {
                     user_id: decoded.userId
+                },
+                select: {
+                    user_id: true,
+                    user_username: true,
+                    user_email: true,
+                    user_phone: true,
+                    user_create_at: true,
+                    role: true
                 }
             });
 
@@ -35,6 +43,7 @@ export const authenticate = (app: Elysia) =>
                 user,
             };
         } catch (err) {
+            console.log(err)
             set.status = 401;
             throw new Error("Invalid token"); // Throw an error to stop further processing
         }

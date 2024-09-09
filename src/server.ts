@@ -3,17 +3,14 @@ import app from "./app";
 import { cors } from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import { Context } from "elysia";
-import jwt from "@elysiajs/jwt";
 import cookie from "@elysiajs/cookie";
 
 const port = process.env.PORT || 8000;
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+}));
 app.use(serverTiming());
-// app.use(jwt({
-//     name: 'jwt',
-//     secret: Bun.env.JWT_SECRET!,
-// }))
 app.use(cookie());
 app.use(
   swagger({
@@ -42,8 +39,8 @@ app.use(
   })
 );
 
-app.all("*", ({ set }: Context) => {
-  set.status = 404;
+app.all("*", (ctx: Context) => {
+  ctx.set.status = 404;
   return {
     result: "ไม่พบข้อมูลเส้นทาง",
     status: 404,
@@ -52,6 +49,6 @@ app.all("*", ({ set }: Context) => {
 
 app.listen(port, () => {
   console.log(
-    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+    `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
   );
 });

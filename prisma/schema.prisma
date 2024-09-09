@@ -8,18 +8,108 @@ datasource db {
 }
 
 model users {
-  user_id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  user_username  String    @unique
-  user_password  String
-  user_phone     String    @unique @default("000-000-0000")
-  user_email     String    @unique
-  user_create_at DateTime? @default(now()) @db.Date
-  role           role      @relation(fields: [role_id], references: [role_id])
-  role_id        String    @default("66c03963300fe981eccd18f4") @db.ObjectId
+  id                  String       @id @default(auto()) @map("_id") @db.ObjectId
+  user_id             String       @unique
+  user_username       String       @unique
+  user_password       String
+  user_phone          String       @unique @default("000-000-0000")
+  user_email          String       @unique
+  user_create_at      DateTime     @default(now())
+  user_update_at      DateTime?    @db.Timestamp
+  isVerified          Boolean      @default(false) // ฟิลด์สำหรับบอกว่าผู้ใช้ได้ยืนยันอีเมลหรือไม่
+  verificationCode    String? // ฟิลด์สำหรับเก็บเลข 6 ตัว ในการยืนยันอีเมล
+  verificationToken   String? // ฟิลด์สำหรับเก็บโทเค็นการยืนยันอีเมล
+  verificationExpires DateTime? // ฟิลด์สำหรับเวลาหมดอายุของโทเค็น
+  role                role         @relation(fields: [role_id], references: [role_id])
+  role_id             String       @default("66c03963300fe981eccd18f4") @db.ObjectId
+  report              report[]
+  updatedReports      report[]     @relation("ReportUpdatedBy")
+  logError            logError[]
+  logs                logs[]
+  userImage           userImage[]
+  bannerShop          bannerShop[]
+}
+
+model userImage {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  uimg_id        String   @unique
+  uimg_profile   String // เก็บ Base64 ของภาพ
+  uimg_create_at DateTime @default(now())
+  uimg_status    Int      @default(1) // 1 คือใช้งาน 0 คือไม่ใช้งาน
+  users          users    @relation(fields: [mongo_user_id], references: [id])
+  mongo_user_id  String   @db.ObjectId
 }
 
 model role {
   role_id   String  @id @default(auto()) @map("_id") @db.ObjectId
   role_type String  @unique
   users     users[]
+}
+
+model bannerShop {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId // รหัสแบนเนอร์
+  bShop_id         String    @unique // รหัสแบนเนอร์แบบไม่ได้สร้างจ่าก mongo
+  bShop_image      String    @db.String // เก็บ Base64 ของภาพ
+  bShop_link       String    @db.String // ลิ้งค์ที่จะแสดงเมื่อกดที่ภาพ
+  bShop_status     Boolean   @default(false) // สถานะของแบนเนอร์ (true = แสดง, false = ซ่อน)
+  bShop_create_at  DateTime  @default(now()) // วันที่สร้างแบนเนอร์
+  bShop_update_at  DateTime  @db.Timestamp // วันที่อัปเดตแบนเนอร์
+  bShop_start_date DateTime? // วันที่เริ่มแสดงแบนเนอร์
+  bShop_end_date   DateTime? // วันที่สิ้นสุดการแสดงแบนเนอร์
+  users            users     @relation(fields: [mongo_user_id], references: [id]) // ความสัมพันธ์กับผู้ใช้
+  mongo_user_id    String    @db.ObjectId // รหัสผู้ใช้ที่สร้างแบนเนอร์
+}
+
+model report {
+  rep_id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  rep_title           String       @db.String
+  rep_body            String       @db.String
+  rep_create_at       DateTime?    @default(now())
+  rep_update_at       DateTime?    @db.Timestamp
+  reportStatus        reportStatus @relation(fields: [mongo_rps_id], references: [id])
+  mongo_rps_id        String       @db.ObjectId
+  users               users        @relation(fields: [mongo_user_id], references: [id])
+  mongo_user_id       String       @db.ObjectId
+  updated_by          users        @relation("ReportUpdatedBy", fields: [up_by_mongo_user_id], references: [id])
+  up_by_mongo_user_id String       @db.ObjectId
+}
+
+model reportStatus {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  rps_id        String    @unique
+  rps_name      String    @db.String
+  rps_active    Int       @default(0) // 0 คือ ไม่แสดง 1 คือแสดง
+  rps_create_at DateTime? @default(now())
+  rps_update_at DateTime? @db.Timestamp
+  report        report[]
+}
+
+model logs {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  log_id         String   @unique
+  log_medthod    String   @db.String
+  log_pathname   String   @db.String
+  log_action     String // ชื่อการกระทำ เช่น "change report status"
+  log_code       Int // เก็บสถานะ เช่น 200, 400 เป็นต้น
+  log_status     String // เก็บค่าแบบ fail, error หรือ success
+  log_details    String // รายละเอียดเพิ่มเติม เช่น "status changed from X to Y"
+  log_ip_address String   @db.String // ที่อยู่ IP ของผู้ใช้
+  log_user_agent String   @db.String // ข้อมูลเกี่ยวกับเบราว์เซอร์หรืออุปกรณ์
+  users          users    @relation(fields: [mongo_user_id], references: [id]) // ผู้ที่ทำการกระทำ
+  mongo_user_id  String   @db.ObjectId
+  log_created_at DateTime @default(now())
+}
+
+model logError {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  error_id          String   @unique
+  error_code        String   @db.String
+  error_type        String // ประเภทของข้อผิดพลาด เช่น Database, API, Authentication
+  error_message     String // ข้อความแสดงข้อผิดพลาด
+  error_stack_trace String // รายละเอียดของข้อผิดพลาด เช่น stack trace
+  error_medthod     String   @db.String
+  error_pathname    String   @db.String
+  users             users?   @relation(fields: [mongo_user_id], references: [id]) // ผู้ใช้ที่เจอข้อผิดพลาด (ถ้ามี)
+  mongo_user_id     String?  @db.ObjectId
+  created_at        DateTime @default(now())
 }

@@ -2,6 +2,7 @@ import { Context } from "elysia";
 import { userRequestBody } from "../interface/interface";
 import { createError } from "../util/createError";
 import prisma from "../config/prisma";
+import { nanoid } from "nanoid";
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto-js')
 
@@ -45,8 +46,11 @@ export const signUp = async (ctx: Context) => {
 
         const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();
 
+        const genUID = `U${nanoid(11).toUpperCase()}`
+
         const addUser = await prisma.users.create({
             data: {
+                user_id: genUID,
                 user_username,
                 user_password: hashPassowrd,
                 user_phone,
@@ -118,6 +122,17 @@ export const signIn = async (ctx: Context) => {
             code: 200
         }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN! });
 
+        ctx.cookie.accessToken.set({
+            value: "Bearer " + accessToken,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 วัน
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            priority: 'high',
+            sameSite: 'lax',
+            path: "/",
+        });
+        
         return {
             result: 'success!',
             token: accessToken,
@@ -132,3 +147,26 @@ export const signIn = async (ctx: Context) => {
         }
     }
 }
+
+export const signOut = (ctx: Context) => {
+    try {
+        ctx.cookie.accessToken.set({
+            value: '',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 0,
+            path: "/",
+        });
+
+        return {
+            result: 'ออกจากระบบสำเร็จ!',
+            status: 200,
+        };
+    } catch (err) {
+        console.log(err);
+        ctx.set.status = 500;
+        return {
+            message: "เกิดข้อผิดพลาดในการเชื่อมต่อ",
+        };
+    }
+};

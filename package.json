@@ -16,7 +16,8 @@
     "@prisma/client": "5.18.0",
     "crypto-js": "^4.2.0",
     "elysia": "latest",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "nanoid": "^5.0.7"
   },
   "devDependencies": {
     "bun-types": "latest",

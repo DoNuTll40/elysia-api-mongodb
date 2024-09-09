@@ -1,5 +1,5 @@
 import Elysia, { error } from "elysia";
-import { signIn, signUp } from "../controller/auth-controller";
+import { signIn, signOut, signUp } from "../controller/auth-controller";
 import jwt from "@elysiajs/jwt";
 import { authenticate } from "../middleware/authenticate";
 
@@ -165,7 +165,7 @@ export const authRoute = (app: Elysia) => {
               },
             },
             500: {
-              description: "Sign-up internal server error",
+              description: "Sign-in internal server error",
               content: {
                 "application/json": {
                   schema: {
@@ -185,6 +185,51 @@ export const authRoute = (app: Elysia) => {
       })
 
       .use(authenticate)
+
+      .post("/sign-out", signOut, {
+        detail: {
+          tags: ["Auth"],
+          summary: "ออกจากระบบ",
+          description: "Authenticates a user and returns a session token.",
+          security: [{
+            bearerAuth: [],
+          }],
+          responses: {
+            200: {
+              description: "Successful sign-out",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      result: {
+                        type: "string",
+                        example: "ออกจากระบบสำเร็จ!",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Sign-out internal server error",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      error: {
+                        type: "string",
+                        example: "เกิดข้อผิดพลาดในการเชื่อมต่อ",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
 
       .get("/me", ({ user, set }) => {
         if (!user) {
