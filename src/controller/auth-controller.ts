@@ -46,7 +46,7 @@ export const signUp = async (ctx: Context) => {
 
         const hashPassowrd = crypto.AES.encrypt(user_password, process.env.CRYPTO_SECRET).toString();   
 
-        const genUID = `USER${nanoid(11).toUpperCase()}`
+        const genUID = `USER${Date.now()}`
 
         const addUser = await prisma.users.create({
             data: {
