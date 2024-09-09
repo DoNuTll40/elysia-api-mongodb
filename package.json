@@ -5,7 +5,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch ./src/server.ts",
     "build": "tsc --outdir dist",
-    "start": "bun run dist/server.js",
+    "start": "bun run dist/api/server.js",
     "setup": "bun install && bun update && bun prisma generate && npm install typescript --save-dev && node overwriteCookieIndex.js"
   },
   "dependencies": {
