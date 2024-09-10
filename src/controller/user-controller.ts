@@ -6,7 +6,12 @@ import { userRequestBody } from "../interface/interface";
 const crypto = require('crypto-js')
 
 export const getUser = async (ctx: Context) => { // ctx เป็นชื่อตัวแปร ย่อมาจาก Context
-    const rs = await prisma.users.findMany()
+    const rs = await prisma.users.findMany({
+        include: {
+            role: true,
+            userImage: true,
+        }
+    })
     if(rs.length !== 0){
         return { result: rs, status: 200 }
     }else{
